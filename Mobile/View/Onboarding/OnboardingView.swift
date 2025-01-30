@@ -33,19 +33,22 @@ struct OnboardingView: View {
                 generatedView
             }
         }
-        .padding()
+        .padding(.all, 32)
         .animation(.easeInOut, value: onBoardingState)
     }
 }
 
 extension OnboardingView {
     private var helloView: some View {
-        VStack {
-            Text("Hello")
-                .font(.largeTitle)
-                .padding()
+        VStack (alignment: .center, spacing: 64){
+            Text("Hello!")
+                .font(.system(size: 64))
+                .bold()
+            
+            OnboardingIcon(icon: .robot)
             
             Text("このアプリはあなた専用のAIキャラクターを作成し，あなたの相談役になってくれます")
+                .multilineTextAlignment(.center)
             
             Button("Next") {
                 onBoardingState = .Name
@@ -55,12 +58,15 @@ extension OnboardingView {
     }
     
     private var nameView: some View {
-        VStack {
-            Text("What is your name?")
-                .font(.largeTitle)
-                .padding()
-            TextField("Name", text: $name)
-                .padding()
+        VStack (alignment: .center, spacing: 64){
+            Text("あなたの名前は？")
+                .font(.system(size: 32))
+                .bold()
+            
+            OnboardingIcon(icon: .thinking)
+            
+            CustomTextField(placeholder: "name", delegate: self)
+                
             Button("Next") {
                 onBoardingState = .Generating
             }
@@ -69,12 +75,15 @@ extension OnboardingView {
     }
     
     private var generatingView: some View {
-        VStack {
-            Text("Hello, \(name)!")
-                .font(.title)
-                .padding()
-            Text("Generating your personalized experience...")
-                .padding()
+        VStack (alignment: .center, spacing: 64){
+            Text("もう少し！")
+                .font(.system(size: 32))
+                .bold()
+            
+            OnboardingIcon(icon: .thinking)
+            
+            Text("あなた専用のAIを作成中です最後にもう少しだけあなたのことを教えてください")
+                .multilineTextAlignment(.center)
             
             Button("Next") {
                 onBoardingState = .Generated
@@ -83,19 +92,28 @@ extension OnboardingView {
         }
     }
     
-    
     private var generatedView: some View {
-        VStack {
+        VStack (alignment: .center, spacing: 64){
             Text("Hello, \(name)!")
                 .font(.title)
                 .padding()
-            Text("Your personalized experience is ready!")
-                .padding()
+            
+            OnboardingIcon(icon: .check)
+            
+            Button("はじめる") {
+                
+            }
+            .onboardingButton()
         }
     }
-    
 }
 
+extension OnboardingView : CustomTextFieldDelegate {
+    func textDidChange(to newText: String) {
+        print("name: \(newText)")
+        name = newText
+    }
+}
 
 #Preview {
     OnboardingView()
