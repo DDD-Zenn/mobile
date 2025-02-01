@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoginView: View {
-    @Bindable let store: StoreOf<SessionFeature>
+    @Bindable var store: StoreOf<SessionFeature>
     
     var body: some View {
         NavigationStack {
