@@ -13,6 +13,7 @@ struct ContentView: View {
     static let onBoardingStore = OnBoardingFeature.store
     
     init() {
+//        以下のコード有効化すると、最初だけオンボーディング画面が出てきます。
 //        Self.onBoardingStore.send(.checkFirstTimeLaunch)
     }
     
