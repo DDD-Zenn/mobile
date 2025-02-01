@@ -1,28 +1,19 @@
 //
-//  OnboardingView.swift
+//  OnBoardingView.swift
 //  Mobile
 //
 //  Created by 浦山秀斗 on 2025/01/27.
 //
 
 import SwiftUI
+import ComposableArchitecture
 
-import SwiftUI
+struct OnBoardingView: View {
+    @Bindable var store: StoreOf<OnBoardingFeature>
 
-struct OnboardingView: View {
-    private enum OnboardingState {
-        case Hello
-        case Name
-        case Generating
-        case Generated
-    }
-    
-    @State private var onBoardingState: OnboardingState = .Hello
-    @State private var name: String = ""
-    
     var body: some View {
         VStack {
-            switch onBoardingState {
+            switch store.onBoardingState {
             case .Hello:
                 helloView
             case .Name:
@@ -34,26 +25,26 @@ struct OnboardingView: View {
             }
         }
         .padding(.all, 32)
-        .animation(.easeInOut, value: onBoardingState)
+        .animation(.easeInOut, value: store.onBoardingState)
     }
 }
 
-extension OnboardingView {
+extension OnBoardingView {
     private var helloView: some View {
         VStack (alignment: .center, spacing: 64){
             Text("Hello!")
                 .font(.system(size: 64))
                 .bold()
             
-            OnboardingIcon(icon: .robot)
+            OnBoardingIcon(icon: .robot)
             
             Text("このアプリはあなた専用のAIキャラクターを作成し，あなたの相談役になってくれます")
                 .multilineTextAlignment(.center)
             
             Button("Next") {
-                onBoardingState = .Name
+                store.send(.updateState(.Name))
             }
-            .onboardingButton()
+            .OnBoardingButton()
         }
     }
     
@@ -63,14 +54,14 @@ extension OnboardingView {
                 .font(.system(size: 32))
                 .bold()
             
-            OnboardingIcon(icon: .thinking)
+            OnBoardingIcon(icon: .thinking)
             
             CustomTextField(placeholder: "name", delegate: self)
                 
             Button("Next") {
-                onBoardingState = .Generating
+                store.send(.updateState(.Generating))
             }
-            .onboardingButton()
+            .OnBoardingButton()
         }
     }
     
@@ -80,15 +71,15 @@ extension OnboardingView {
                 .font(.system(size: 32))
                 .bold()
             
-            OnboardingIcon(icon: .thinking)
+            OnBoardingIcon(icon: .thinking)
             
             Text("あなた専用のAIを作成中です最後にもう少しだけあなたのことを教えてください")
                 .multilineTextAlignment(.center)
             
             Button("Next") {
-                onBoardingState = .Generated
+                store.send(.updateState(.Generated))
             }
-            .onboardingButton()
+            .OnBoardingButton()
         }
     }
     
@@ -100,23 +91,22 @@ extension OnboardingView {
             
             Text("あなた専用のAIを作成しました！しかし，彼はまだだあなたのことを理解しきれていないかもしれません。使えば使うほど，あなた専用にカスタマイズされていきます")
             
-            OnboardingIcon(icon: .check)
+            OnBoardingIcon(icon: .check)
             
             Button("はじめる") {
-                
+                store.send(.finishedOnBoarding)
             }
-            .onboardingButton()
+            .OnBoardingButton()
         }
     }
 }
 
-extension OnboardingView : CustomTextFieldDelegate {
+extension OnBoardingView : CustomTextFieldDelegate {
     func textDidChange(to newText: String) {
         print("name: \(newText)")
-        name = newText
     }
 }
 
 #Preview {
-    OnboardingView()
+    OnBoardingView(store: OnBoardingFeature.store)
 }

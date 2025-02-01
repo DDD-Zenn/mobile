@@ -11,4 +11,10 @@ struct User : Identifiable, Equatable {
     let id: UUID
     let name: String
     let email: String
+    
+    static let dummy: User = .init(
+        id: UUID(),
+        name: "Anonymous",
+        email: "anonymous@example.com"
+    )
 }
