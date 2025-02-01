@@ -94,9 +94,11 @@ extension OnboardingView {
     
     private var generatedView: some View {
         VStack (alignment: .center, spacing: 64){
-            Text("Hello, \(name)!")
-                .font(.title)
+            Text("はじめよう！")
+                .font(.largeTitle)
                 .padding()
+            
+            Text("あなた専用のAIを作成しました！しかし，彼はまだだあなたのことを理解しきれていないかもしれません。使えば使うほど，あなた専用にカスタマイズされていきます")
             
             OnboardingIcon(icon: .check)
             
