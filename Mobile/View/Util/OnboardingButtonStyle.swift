@@ -1,5 +1,5 @@
 //
-//  OnboardingButtonStyle.swift
+//  OnBoardingButtonStyle.swift
 //  Mobile
 //
 //  Created by 浦山秀斗 on 2025/01/28.
@@ -8,12 +8,12 @@
 import SwiftUI
 
 extension View {
-    func onboardingButton() -> some View {
-        self.buttonStyle(OnboardingButtonStyle())
+    func OnBoardingButton() -> some View {
+        self.buttonStyle(OnBoardingButtonStyle())
     }
 }
 
-struct OnboardingButtonStyle: ButtonStyle {
+struct OnBoardingButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding()

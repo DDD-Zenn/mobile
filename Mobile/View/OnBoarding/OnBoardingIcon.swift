@@ -1,5 +1,5 @@
 //
-//  OnboardingIcon.swift
+//  OnBoardingIcon.swift
 //  Mobile
 //
 //  Created by 浦山秀斗 on 2025/01/30.
@@ -24,7 +24,7 @@ enum Icon {
     }
 }
 
-struct OnboardingIcon : View {
+struct OnBoardingIcon : View {
     let icon: Icon
     
     var body: some View {

@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct LoginView: View {
+    @Bindable var store: StoreOf<SessionFeature>
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -28,46 +31,30 @@ struct LoginView: View {
                 VStack (spacing: 32){
                     Text("アカウントを作成 / ログイン")
                     
-                    NavigationLink(destination: OnboardingView()) {
+                    Button(action: {
+                        store.send(.login)
+                    }, label: {
                         HStack {
-                            Image(systemName: "apple.logo")
-                                .foregroundStyle(.white)
+                            Image("x")
+                                .resizable()
+                                .frame(width: 24, height: 24)
                             
-                            Text("Continue With Apple")
+                            Text("Continue With X (Twitter)")
                                 .foregroundStyle(.white)
                                 .fontWeight(.bold)
                         }
-                            .frame(width: 250, height: 60)
+                            .frame(width: 300, height: 60)
                             .background(Color.black)
                             .clipShape (
                                 RoundedRectangle(cornerRadius: 40)
                             )
-                    }
-                    
-                    NavigationLink(destination: OnboardingView()) {
-                        HStack {
-                            Image("google")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                            
-                            Text("Continue With Google")
-                                .foregroundStyle(.black)
-                                .fontWeight(.bold)
-                        }
-                            .frame(width: 250, height: 60)
-                            .background(Color(red: 0.95, green: 0.95, blue: 0.95))
-                            .clipShape (
-                                RoundedRectangle(cornerRadius: 40)
-                            )
-                    }
+                    })
                 }
             }.padding(.all, 64)
         }
-        
-        
     }
 }
 
 #Preview {
-    LoginView()
+    LoginView(store: SessionFeature.store)
 }
