@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
+    static let store = HomeFeature.store
     
+    init() {
+        Self.store.send(.fetchTopics)
+    }
     
     var body: some View {
         VStack {
@@ -55,11 +59,17 @@ extension HomeView {
                 .frame(width: 180)
                 .multilineTextAlignment(.center)
             
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(0..<10){i in
-                        ChatRoomCard(topic: Topic(type: .embarrassing, content: ""))
-                            .padding()
+            if (Self.store.isLoadingTopics) {
+                ProgressView()
+            } else if (Self.store.topics.isEmpty) {
+                Text("まだTopicはありません")
+            } else {
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(Self.store.topics, id: \.self) { topic in
+                            ChatRoomCard(topic: topic)
+                                .padding()
+                        }
                     }
                 }
             }

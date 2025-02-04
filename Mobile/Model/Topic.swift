@@ -45,7 +45,7 @@ enum TopicType {
     }
 }
 
-struct Topic {
+struct Topic : Hashable {
     let type: TopicType
     let content: String
     
