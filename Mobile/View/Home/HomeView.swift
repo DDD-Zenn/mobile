@@ -58,7 +58,7 @@ extension HomeView {
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(0..<10){i in
-                        ChatRoomCard()
+                        ChatRoomCard(topic: Topic(type: .embarrassing, content: ""))
                             .padding()
                     }
                 }
