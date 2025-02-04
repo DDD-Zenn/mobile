@@ -7,14 +7,17 @@
 
 import Foundation
 
-struct User : Identifiable, Equatable {
-    let id: UUID
+struct User {
+    let uid: String
     let name: String
-    let email: String
     
     static let dummy: User = .init(
-        id: UUID(),
-        name: "Anonymous",
-        email: "anonymous@example.com"
+        uid: "dummy_uid",
+        name: "Anonymous"
     )
+    
+    init(uid: String, name: String) {
+        self.uid = uid
+        self.name = name
+    }
 }

@@ -94,7 +94,7 @@ extension OnBoardingView {
             OnBoardingIcon(icon: .check)
             
             Button("はじめる") {
-                store.send(.finishedOnBoarding)
+                store.send(.createUser)
             }
             .OnBoardingButton()
         }
@@ -103,7 +103,7 @@ extension OnBoardingView {
 
 extension OnBoardingView : CustomTextFieldDelegate {
     func textDidChange(to newText: String) {
-        print("name: \(newText)")
+        store.send(.setUsername(newText))
     }
 }
 

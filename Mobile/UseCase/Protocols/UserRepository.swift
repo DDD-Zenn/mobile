@@ -7,4 +7,5 @@
 
 protocol UserRepository {
     func fetchByUid(_ uid: String) async throws -> User?
+    func create(_ user: User) async throws -> Void
 }
