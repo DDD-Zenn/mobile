@@ -13,13 +13,22 @@ struct OnBoardingFeature {
     @ObservableState
     struct State {
         var onBoardingState: OnBoardingState = .Hello
-        var isFirstTimeLaunch: Bool = true
+        var shouldOnBoarding: Bool = true
+        var uid: String? = nil
+        var username: String? = nil
+        var registerdUserCallback: ((User?) -> Void) = { _ in }
     }
     
     enum Action {
-        case finishedOnBoarding
-        case checkFirstTimeLaunch
+        case createUser
+        case skipOnBoarding
         case updateState(OnBoardingState)
+        case doneOnBoarding
+        case registerdUserCallback((User?) -> Void)
+        case createdUser(User)
+        case failedToCreateUser(Error)
+        case setUID(String)
+        case setUsername(String)
     }
     
     enum OnBoardingState {
@@ -39,16 +48,43 @@ struct OnBoardingFeature {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .finishedOnBoarding:
-                FinishOnBoardingUseCase().execute()
-                state.isFirstTimeLaunch = false
-                return .none
-            case .checkFirstTimeLaunch:
-                let usecase = FirstTimeLaunchCheckUseCase()
-                state.isFirstTimeLaunch = usecase.execute()
+            case .createUser:
+                guard let uid = state.uid else { return .none }
+                guard let name = state.username else { return .none }
+                return .run { send in
+                    do {
+                        try await CreateUserUseCase().execute(uid: uid, name: name)
+                        await send(.createdUser(.init(uid: uid, name: name)))
+                    } catch {
+                        await send(.failedToCreateUser(error))
+                    }
+                }
+            case .skipOnBoarding:
+                state.shouldOnBoarding = false
                 return .none
             case .updateState(let newState):
                 state.onBoardingState = newState
+                return .none
+            case .doneOnBoarding:
+                state.shouldOnBoarding = false
+                return .none
+            case .registerdUserCallback(let callback):
+                state.registerdUserCallback = callback
+                return .none
+            case .createdUser(let user):
+                state.registerdUserCallback(user)
+                return .run { send in
+                    await send(.doneOnBoarding)
+                }
+            case .failedToCreateUser(let error):
+                state.registerdUserCallback(nil)
+                print("fail create user: \(error)")
+                return .none
+            case .setUID(let uid):
+                state.uid = uid
+                return .none
+            case .setUsername(let username):
+                state.username = username
                 return .none
             }
         }

@@ -6,6 +6,9 @@
 //
 
 final class UserRepositoryImpl : UserRepository {
+    func create(_ user: User) async throws {
+    }
+    
     func fetchByUid(_ uid: String) -> User? {
         nil
     }

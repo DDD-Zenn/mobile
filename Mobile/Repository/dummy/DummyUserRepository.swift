@@ -6,7 +6,15 @@
 //
 
 final class DummyUserRepository : UserRepository {
-    func fetchByUid(_ uid: String) -> User? {
+    private static var users: [User] = [
         .dummy
+    ]
+    
+    func fetchByUid(_ uid: String) -> User? {
+        return Self.users.first(where: { $0.uid == uid })
+    }
+    
+    func create(_ user: User) async throws {
+        Self.users.append(user)
     }
 }
