@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatRoomCard : View {
+    let topic: Topic
     
     var body: some View {
         VStack {
@@ -16,24 +17,24 @@ struct ChatRoomCard : View {
             
             Spacer()
             
-            Text("🥲")
+            Text(topic.type.icon)
                 .font(.largeTitle)
             
             Spacer()
             
-            Text("最近、彼女とうまくいかないんだって?")
+            Text(topic.content)
                 .bold()
         }
         .padding()
         .frame(width: 200, height: 160)
         .background(Color.white)
         .cornerRadius(12)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.cyan.opacity(0.4), lineWidth: 4))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(topic.type.style.opacity(0.4), lineWidth: 4))
         .shadow(radius: 4)
     }
 }
 
 
 #Preview {
-    ChatRoomCard()
+    ChatRoomCard(topic: Topic(type: .sad, content: "大丈夫？最近彼女と別れたの？"))
 }
