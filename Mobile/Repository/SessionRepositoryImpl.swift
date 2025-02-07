@@ -1,35 +1,31 @@
-//
-//  SessionRepositoryImpl.swift
-//  Mobile
-//
-//  Created by 浦山秀斗 on 2025/02/01.
-//
-
 import FirebaseAuth
 import FirebaseCore
 import AuthenticationServices
 
-final class SessionRepositoryImpl : SessionRepository {
+final class SessionRepositoryImpl: SessionRepository {
     func login() async throws -> Session {
         guard let credential = try await getCredential(),
-              let OAuthCredential = credential as? OAuthCredential else {
+              let oAuthCredential = credential as? OAuthCredential else {
             throw AuthError.invalidCredential
         }
         
         do {
-            let authResult = try await Auth.auth().signIn(with: OAuthCredential)
+            let authResult = try await Auth.auth().signIn(with: oAuthCredential)
             let user = authResult.user
             
             guard let refreshToken = user.refreshToken else {
                 throw AuthError.missingRefreshToken
             }
             
-            guard let accessToken = OAuthCredential.accessToken,
-                  let accessTokenSecret = OAuthCredential.secret else {
-                throw AuthError.missingOAuthToken
-            }
+            let accessToken = oAuthCredential.accessToken ?? ""
+            let accessTokenSecret = oAuthCredential.secret ?? ""
             
-            return Session(uid: user.uid, firebaseRefreshToken: refreshToken, accessToken: accessToken, accessTokenSecret: accessTokenSecret)
+            return Session(
+                uid: user.uid,
+                firebaseRefreshToken: refreshToken,
+                accessToken: accessToken,
+                accessTokenSecret: accessTokenSecret
+            )
         } catch {
             throw AuthError.failureSignIn
         }
@@ -38,15 +34,15 @@ final class SessionRepositoryImpl : SessionRepository {
     private func getCredential() async throws -> AuthCredential? {
         let provider = OAuthProvider(providerID: "twitter.com")
         
-        return await withCheckedContinuation { continuation in
-            
+        return try await withCheckedThrowingContinuation { continuation in
             provider.getCredentialWith(nil) { credential, error in
                 if let error = error {
-                    continuation.resume(throwing: error as! Never)
+                    continuation.resume(throwing: error)
                 } else if let credential = credential {
                     continuation.resume(returning: credential)
                 } else {
-                    continuation.resume(throwing: NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown error"]) as! Never)
+                    let unknownError = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
+                    continuation.resume(throwing: unknownError)
                 }
             }
         }
