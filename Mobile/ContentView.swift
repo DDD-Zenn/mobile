@@ -37,7 +37,7 @@ struct ContentView: View {
             } else if Self.onBoardingStore.shouldOnBoarding {
                 OnBoardingView(store: Self.onBoardingStore)
             } else {
-                HomeView()
+                HomeView(sessionStore: Self.sessionStore)
             }
         }
     }

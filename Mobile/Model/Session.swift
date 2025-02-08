@@ -11,6 +11,5 @@ struct Session {
     let accessToken: String
     let accessTokenSecret: String
     
-    
     static let dummy = Session(uid: "dummy", firebaseRefreshToken: "dummy", accessToken: "dummy", accessTokenSecret: "dummy")
 }

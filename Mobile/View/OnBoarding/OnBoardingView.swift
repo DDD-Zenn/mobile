@@ -61,7 +61,9 @@ extension OnBoardingView {
             Button("Next") {
                 store.send(.updateState(.Generating))
             }
+            .disabled(store.username == "")
             .OnBoardingButton()
+            
         }
     }
     
@@ -104,6 +106,9 @@ extension OnBoardingView {
 extension OnBoardingView : CustomTextFieldDelegate {
     func textDidChange(to newText: String) {
         store.send(.setUsername(newText))
+    }
+    
+    func didTapReturnKey() {
     }
 }
 

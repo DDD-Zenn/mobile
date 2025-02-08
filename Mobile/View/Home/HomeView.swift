@@ -6,27 +6,31 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct HomeView: View {
+    @Bindable var sessionStore: StoreOf<SessionFeature>
     static let store = HomeFeature.store
-    
-    init() {
-        Self.store.send(.fetchTopics)
-    }
+    @State var message = ""
     
     var body: some View {
-        VStack {
-            headerView
-            
-            Spacer()
-            
-            topicView
-            
-            Spacer()
-            
-            CustomTextField(placeholder: "あなたがAiMeeeに聞きたいことは?", delegate: self)
+        NavigationStack {
+            VStack {
+                headerView
+                
+                Spacer()
+                
+                topicView
+                
+                Spacer()
+                
+                CustomTextField(placeholder: "あなたがAiMeeeに聞きたいことは?", delegate: self)
+            }
+            .padding()
+            .onAppear {
+                Self.store.send(.fetchChatRooms(self.sessionStore.currentUser!.uid))
+            }
         }
-        .padding()
     }
 }
 
@@ -59,16 +63,18 @@ extension HomeView {
                 .frame(width: 180)
                 .multilineTextAlignment(.center)
             
-            if (Self.store.isLoadingTopics) {
+            if (Self.store.isLoading) {
                 ProgressView()
-            } else if (Self.store.topics.isEmpty) {
+            } else if (Self.store.chatRooms.isEmpty) {
                 Text("まだTopicはありません")
             } else {
                 ScrollView(.horizontal) {
                     HStack {
-                        ForEach(Self.store.topics, id: \.self) { topic in
-                            ChatRoomCard(topic: topic)
-                                .padding()
+                        ForEach(Self.store.chatRooms) { room in
+                            NavigationLink(destination: ChatRoomView(chatRoom: room), label: {
+                                ChatRoomCard(chatRoom: room)
+                                    .padding()
+                            })
                         }
                     }
                 }
@@ -79,10 +85,15 @@ extension HomeView {
 
 extension HomeView : CustomTextFieldDelegate {
     func textDidChange(to newText: String) {
-        
+        message = newText
+    }
+    
+    func didTapReturnKey() {
+        let chat = Chat(talker: sessionStore.currentUser!.name, message: message)
+        Self.store.send(.sendChat((sessionStore.currentUser!, chat)))
     }
 }
 
 #Preview {
-    HomeView()
+    HomeView(sessionStore: SessionFeature.store)
 }

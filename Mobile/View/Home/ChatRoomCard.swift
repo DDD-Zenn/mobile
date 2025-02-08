@@ -8,33 +8,32 @@
 import SwiftUI
 
 struct ChatRoomCard : View {
-    let topic: Topic
+    let chatRoom: ChatRoom
     
     var body: some View {
         VStack {
             Text("TOPIC")
                 .bold()
+                .foregroundStyle(.black)
             
             Spacer()
             
-            Text(topic.type.icon)
+            Text(chatRoom.topicType.icon)
                 .font(.largeTitle)
+                .foregroundStyle(.black)
             
             Spacer()
             
-            Text(topic.content)
+            Text(chatRoom.chats.first?.message ?? "")
                 .bold()
+                .foregroundStyle(.black)
         }
         .padding()
         .frame(width: 200, height: 160)
         .background(Color.white)
+        .foregroundStyle(.secondary)
         .cornerRadius(12)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(topic.type.style.opacity(0.4), lineWidth: 4))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(chatRoom.topicType.style.opacity(0.4), lineWidth: 4))
         .shadow(radius: 4)
     }
-}
-
-
-#Preview {
-    ChatRoomCard(topic: Topic(type: .sad, content: "大丈夫？最近彼女と別れたの？"))
 }

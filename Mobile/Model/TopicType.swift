@@ -43,14 +43,9 @@ enum TopicType {
             return .red
         }
     }
-}
-
-struct Topic : Hashable {
-    let type: TopicType
-    let content: String
     
-    init(type: TopicType, content: String) {
-        self.type = type
-        self.content = content
+    static var random: TopicType {
+        let topics: [TopicType] = [.happy, .sad, .suprize, .horror, .embarrassing]
+        return topics.randomElement() ?? .happy
     }
 }
