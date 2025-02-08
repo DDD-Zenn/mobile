@@ -7,7 +7,7 @@
 import Foundation
 
 final class DummyChatRoomRepository: ChatRepository {
-    private var chatRooms: [ChatRoom] = [
+    private static var chatRooms: [ChatRoom] = [
         ChatRoom(user: .dummy, chats: [
             Chat(talker: "AiMeee", message: "えっ！？推しにいいねされたの！？どんなツイートだったの！？🔥"),
         ], topicType: .suprize),
@@ -32,7 +32,7 @@ final class DummyChatRoomRepository: ChatRepository {
     ]
     
     func fetchChatRoom(uid: String) async throws -> [ChatRoom] {
-        let result = chatRooms.filter {
+        let result = Self.chatRooms.filter {
             uid != $0.user.uid
         }
         
@@ -44,7 +44,7 @@ final class DummyChatRoomRepository: ChatRepository {
     }
     
     func fetchChatRoom(room_id: UUID) async throws -> ChatRoom {
-        let result = chatRooms.first {
+        let result = Self.chatRooms.first {
             room_id == $0.id
         }
         
@@ -53,14 +53,14 @@ final class DummyChatRoomRepository: ChatRepository {
         }
             
         return result!
-    }
+    }  
     
     func createChatRoom(chatRoom: ChatRoom) {
-        chatRooms.append(chatRoom)
+        Self.chatRooms.append(chatRoom)
     }
     
     func postChat(with chat: Chat, from room_id: UUID) {
-        chatRooms = chatRooms.map {
+        Self.chatRooms = Self.chatRooms.map {
             room_id == $0.id ? $0.append(chat) : $0
         }
     }
