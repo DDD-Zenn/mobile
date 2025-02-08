@@ -37,7 +37,7 @@ extension ChatBubbleView {
                     .fontDesign(.rounded)
             }
             .padding(12)
-            .background(Color.white.opacity(0.8 ))
+            .background(Color.white.opacity(0.8))
             .cornerRadius(12)
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
             .frame(maxWidth: 290, alignment: .leading)
@@ -66,7 +66,7 @@ extension ChatBubbleView {
             .background(Color(red: 0.9, green: 1, blue: 0.85))
             .cornerRadius(12)
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-            .frame(maxWidth: 290, alignment: .trailing)
+            .frame(maxWidth: 290, alignment: .leading)
         }
     }
 }
