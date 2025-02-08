@@ -8,8 +8,8 @@
 import Foundation
 
 struct LoginUseCase {
-    private let sessionRepository: SessionRepository = DummySessionRepository()
-    private let userRepository: UserRepository = DummyUserRepository()
+    private let sessionRepository: SessionRepository = SessionRepositoryImpl()
+    private let userRepository: UserRepository = UserRepositoryImpl()
     private let key = "hasLaunchedBefore"
     
     func execute() async throws -> Session {
