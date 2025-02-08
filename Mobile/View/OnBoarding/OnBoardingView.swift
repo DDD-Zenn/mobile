@@ -56,12 +56,19 @@ extension OnBoardingView {
             
             OnBoardingIcon(icon: .thinking)
             
-            CustomTextField(placeholder: "name", delegate: self)
+            VStack {
+                Text(store.errorText)
+                    .foregroundStyle(.pink)
+                CustomTextField(placeholder: "name", delegate: self)
+            }
+            
                 
             Button("Next") {
                 store.send(.updateState(.Generating))
             }
+            .disabled(store.username == "")
             .OnBoardingButton()
+            
         }
     }
     
@@ -104,6 +111,9 @@ extension OnBoardingView {
 extension OnBoardingView : CustomTextFieldDelegate {
     func textDidChange(to newText: String) {
         store.send(.setUsername(newText))
+    }
+    
+    func didTapReturnKey() {
     }
 }
 

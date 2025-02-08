@@ -11,13 +11,14 @@ import ComposableArchitecture
 struct HomeFeature {
     @ObservableState
     struct State {
-        var topics: [Topic] = []
-        var isLoadingTopics: Bool = false
+        var chatRooms: [ChatRoom] = []
+        var isLoading: Bool = false
     }
     
     enum Action {
-        case fetchTopics
-        case topicsFetched([Topic])
+        case fetchChatRooms(String)
+        case fetchedChatRooms([ChatRoom])
+        case sendChat((User, Chat))
     }
     
     static let store = Store(initialState: Self.State()) {
@@ -29,16 +30,25 @@ struct HomeFeature {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .fetchTopics:
-                state.isLoadingTopics = true
+            case .fetchChatRooms(let uid):
+                state.isLoading = true
                 return .run { send in
-                    let topics = await GetTopicsUseCase().execute()
-                    await send(.topicsFetched(topics))
+                    do {
+                        let chatRoom = try await GetChatRoomsUseCsae().execute(uid: uid)
+                        await send(.fetchedChatRooms(chatRoom))
+                    } catch {
+                        print("error: \(error)")
+                    }
                 }
-            case .topicsFetched(let topics):
-                state.topics = topics
-                state.isLoadingTopics = false
+            case .fetchedChatRooms(let chatRooms):
+                state.chatRooms = chatRooms
+                state.isLoading = false
                 return .none
+            case .sendChat((let user, let chat)):
+                return .run { _ in
+                    let chatRoom = ChatRoom(user: user, topicType: .happy).append(chat)
+                    AddChatRoomUseCase().execute(chatRoom: chatRoom)
+                }
             }
         }
     }

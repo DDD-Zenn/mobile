@@ -10,6 +10,7 @@ import SwiftUI
 
 protocol CustomTextFieldDelegate {
     func textDidChange(to newText: String)
+    func didTapReturnKey()
 }
 
 struct CustomTextField: View {
@@ -43,8 +44,14 @@ struct CustomTextField: View {
                 Group {
                     if isPassword {
                         SecureField(initialText, text: $text) // パスワード用のフィールド
+                            .onSubmit {
+                                delegate.didTapReturnKey()
+                            }
                     } else {
                         TextField(initialText, text: $text)
+                            .onSubmit {
+                                delegate.didTapReturnKey()
+                            }
                     }
                 }
                 .textInputAutocapitalization(.never) // 最初の文字を大文字にしない
@@ -76,6 +83,10 @@ struct CustomTextField: View {
 }
 
 struct CustomTextFieldDelegateMock : CustomTextFieldDelegate {
+    func didTapReturnKey() {
+        
+    }
+    
     func textDidChange(to newText: String) {
         //
     }

@@ -17,6 +17,7 @@ struct OnBoardingFeature {
         var uid: String? = nil
         var username: String? = nil
         var registerdUserCallback: ((User?) -> Void) = { _ in }
+        var errorText: String = ""
     }
     
     enum Action {
@@ -63,6 +64,10 @@ struct OnBoardingFeature {
                 state.shouldOnBoarding = false
                 return .none
             case .updateState(let newState):
+                if (newState == .Generating && state.username == nil) {
+                    state.errorText = "名前が空欄です。入力してください。"
+                    return .none
+                }
                 state.onBoardingState = newState
                 return .none
             case .doneOnBoarding:
